@@ -5,6 +5,11 @@
     <title></title>
     <script src="lib/FileReader.js"></script>
 
+    <style>
+      body{
+        background-color:#cccccc;
+      }
+    </style>
 
     <script src="lib/block/Header.js"></script>
     <script src="lib/block/ColorTable.js"></script>
@@ -16,10 +21,40 @@
     <script src="lib/GifParser.js"></script>
   </head>
   <body>
-    <img src="img/test2.gif">
+
     <script>
 
-    new GifParser("img/test2.gif")
+
+    var parser = new GifParser(100,100)
+
+    parser.setGlobalColorTable([
+      0xffffff,
+      0xff0000
+    ])
+
+
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    canvas.width = 100;canvas.height = 100;
+    //document.getElementsByTagName("body")[0].appendChild(canvas);
+    context.fillStyle="#ff0000";
+    context.rect(0,0,100,100);
+    context.fill();
+    parser.addFrame(canvas);
+
+    context.fillStyle="#ffffff";
+    context.rect(0,0,100,100);
+    context.fill();
+    parser.addFrame(canvas);
+
+    parser.encode();
+
+    /*
+    parser.open("img/light.gif",function(){
+      parser.encode()
+    });
+    */
+
 
 
     </script>

@@ -15,3 +15,6 @@ codeTable
 
 om koden finns gå ett steg djupare i codeTable
 om den inte finns gå tillbaka till djup ett och börja om
+
+add image frame to existing gif
+create a gif from empty GifParser
