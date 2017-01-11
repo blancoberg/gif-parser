@@ -16,5 +16,10 @@ codeTable
 om koden finns gå ett steg djupare i codeTable
 om den inte finns gå tillbaka till djup ett och börja om
 
-add image frame to existing gif
-create a gif from empty GifParser
+add image frame to existing gif     x
+create a gif from empty GifParser   x
+analyse previous frame difference and use that to crop/position image
+add algorythms for creating patterns where a color doesnt exist
+add transparent/interlaced
+
+Lägg till samma koll på table.size som i decode funktionen. har slösat flera dagar på den här skiten nu.

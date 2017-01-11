@@ -21,39 +21,43 @@
     <script src="lib/GifParser.js"></script>
   </head>
   <body>
-
+    <img id="gradient" style="display:none" src="img/gradient.png">
     <script>
 
 
     var parser = new GifParser(100,100)
 
+    /*
     parser.setGlobalColorTable([
       0xffffff,
-      0xff0000
+      0x000000
     ])
 
 
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
     canvas.width = 100;canvas.height = 100;
-    //document.getElementsByTagName("body")[0].appendChild(canvas);
-    context.fillStyle="#ff0000";
-    context.rect(0,0,100,100);
-    context.fill();
-    parser.addFrame(canvas);
+    document.getElementsByTagName("body")[0].appendChild(canvas);
+    context.fillStyle="#000000";
+
+    //parser.addFrame(canvas);
 
     context.fillStyle="#ffffff";
-    context.rect(0,0,100,100);
-    context.fill();
-    parser.addFrame(canvas);
 
-    parser.encode();
 
-    /*
-    parser.open("img/light.gif",function(){
-      parser.encode()
-    });
+    window.onload = function(){
+      context.drawImage(document.getElementById("gradient"),0,0)
+      parser.addFrame(canvas);
+      parser.encode();
+      parser.parse();
+    }
     */
+    parser.open("img/test.gif",function(){
+      parser.encode();
+    });
+
+
+
 
 
 
