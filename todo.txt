@@ -23,3 +23,5 @@ add algorythms for creating patterns where a color doesnt exist
 add transparent/interlaced
 
 Lägg till samma koll på table.size som i decode funktionen. har slösat flera dagar på den här skiten nu.
+lägg till getUpdatedArea()
+Lägg till cropImageData

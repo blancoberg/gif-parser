@@ -27,10 +27,17 @@
 
     var parser = new GifParser(100,100)
 
-    /*
+
     parser.setGlobalColorTable([
       0xffffff,
-      0x000000
+      0xaaaaaa,
+      0xcccccc,
+      0xff0000,
+      0x00ff00
+
+
+
+
     ])
 
 
@@ -38,23 +45,33 @@
     var context = canvas.getContext("2d");
     canvas.width = 100;canvas.height = 100;
     document.getElementsByTagName("body")[0].appendChild(canvas);
-    context.fillStyle="#000000";
 
-    //parser.addFrame(canvas);
-
-    context.fillStyle="#ffffff";
 
 
     window.onload = function(){
-      context.drawImage(document.getElementById("gradient"),0,0)
+
+      context.beginPath();
+      context.fillStyle = "#ff0000"
+      context.fillRect(0,0,100,100);
+      context.fill();
+      context.closePath();
+      context.stroke();
       parser.addFrame(canvas);
-      parser.encode();
-      parser.parse();
+
+      context.fillStyle = "#ffffff"
+      context.fillRect(25,25,50,50);
+      context.fill();
+      parser.addFrame(canvas);
+      parser.encode({
+        crop:true
+      });
+      //parser.parse();
     }
-    */
+
+    /*
     parser.open("img/test.gif",function(){
       parser.encode();
-    });
+    });*/
 
 
 
