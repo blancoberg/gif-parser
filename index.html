@@ -10,18 +10,18 @@
         background-color:#cccccc;
       }
     </style>
-
+    <script src="lib/libgif.js"></script>
     <script src="lib/block/Header.js"></script>
     <script src="lib/block/ColorTable.js"></script>
     <script src="lib/block/ImageDescriptor.js"></script>
     <script src="lib/block/LZW.js"></script>
     <script src="lib/block/ApplicationExtension.js"></script>
     <script src="lib/block/GraphicControlExtension.js"></script>
-
     <script src="lib/GifParser.js"></script>
+    <script src="demo/GIFDrawer.js"></script>
   </head>
   <body>
-
+    <img id="gif" src="img/error4.gif">
     <script>
 
 
@@ -29,14 +29,11 @@
 
 
     parser.setGlobalColorTable([
-      0xffffff,
-      0xaaaaaa,
-      0xcccccc,
-      0xff0000,
-      0x00ff00
-
-
-
+      0xffb85f,
+      0xff7a5a,
+      0x00aaa0,
+      0x8ed2c9,
+      0xfcf4d9
 
     ])
 
@@ -44,12 +41,16 @@
     var canvas = document.createElement("canvas");
     var context = canvas.getContext("2d");
     canvas.width = 100;canvas.height = 100;
-    document.getElementsByTagName("body")[0].appendChild(canvas);
+    //document.getElementsByTagName("body")[0].appendChild(canvas);
 
 
 
     window.onload = function(){
-
+      /*
+      var rub = new SuperGif({ gif: document.getElementById("gif") } );
+                    rub.load(function(){
+                        console.log('oh hey, now the gif is loaded');
+                    });*/
       /*
       context.beginPath();
       context.fillStyle = "#ff0000"
@@ -72,12 +73,35 @@
     }
 
 
-    parser.open("img/test3.gif",function(){
+   parser.open("img/error4.gif",function(){
+      //parser.encode();
+      parser.header.COLOR_RESOLUTION = 8;
+      parser.header.PIXEL_ASPECT_RATIO = 0;
+      parser.header.SORT_FLAG = false;
+
+      for(var i = 0;i<parser.blocks.length;i++){
+
+        if(parser.blocks[i] instanceof ImageDescriptor){
+          console.log("img",parser.blocks[i])
+          parser.blocks[i].colorTableSize = 0;//parser.header.GLOBAL_COLOR_TABLE_SIZE;
+        }
+        if(parser.blocks[i] instanceof GraphicControlExtension){
+          //console.log("controller!",i);
+          parser.blocks[i].byteSize = 4;
+          parser.blocks[i].delayTime = 500;
+        }
+      }
+      //console.log("last block",this.blocks[14])
+      var corruptBlock = this.blocks.splice(9+4,2);
+      console.log("corrupt",corruptBlock)
+
       parser.encode();
     })
 
 
 
+    //var drawer = new GIFDrawer(400,400,0x00aaa0,0xfcf4d9);
+    //document.getElementsByTagName("body")[0].appendChild(drawer.dom);
 
 
 
