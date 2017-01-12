@@ -20,7 +20,7 @@ function GIFDrawer(width,height,bgColor,lineColor){
 
   this.parser = new GifParser(width,height);
   this.parser.setGlobalColorTable([bgColor,lineColor]);
-  this.frames = 100;
+  this.frames = 250;
   this.counter = 0;
 }
 
