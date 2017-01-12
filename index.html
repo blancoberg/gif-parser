@@ -21,7 +21,7 @@
     <script src="lib/GifParser.js"></script>
   </head>
   <body>
-    <img id="gradient" style="display:none" src="img/gradient.png">
+
     <script>
 
 
@@ -50,6 +50,7 @@
 
     window.onload = function(){
 
+      /*
       context.beginPath();
       context.fillStyle = "#ff0000"
       context.fillRect(0,0,100,100);
@@ -58,6 +59,7 @@
       context.stroke();
       parser.addFrame(canvas);
 
+      //context.rotate(1);
       context.fillStyle = "#ffffff"
       context.fillRect(25,25,50,50);
       context.fill();
@@ -66,12 +68,13 @@
         crop:true
       });
       //parser.parse();
+      */
     }
 
-    /*
-    parser.open("img/test.gif",function(){
+
+    parser.open("img/test3.gif",function(){
       parser.encode();
-    });*/
+    })
 
 
 
