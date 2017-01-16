@@ -3,13 +3,98 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script src="lib/FileReader.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato|Pacifico" rel="stylesheet">
 
     <style>
-      body{
-        background-color:#cccccc;
+
+      #pencil{
+        pointer-events: none;
+        cursor:none;
+        display:none;
       }
+      body{
+        background-color:#D6DBD2;
+        font-family:Pacifico;
+      }
+
+      h1{
+        font-size:70px;
+        color:#E75A7C;
+
+        padding-bottom:0px;
+        margin-bottom:0px;
+      }
+
+      p{
+        font-size:18px;
+        color:#585b56;
+        font-family:Lato;
+      }
+      .button{
+        padding:15px;
+        border-radius:5px;
+        background-color:#BBC7A4;
+        color:#ffffff;
+        display:inline-block;
+
+        font-size:25px;
+        cursor:pointer;
+        margin:0px;
+        text-shadow:1px 1px 0px rgba(0,0,0,0.3);
+
+        margin-top:8px;
+        margin-left:0px;
+        margin-right:5px;
+      }
+
+      .button:hover{
+
+
+        background-color:#E75A7C;
+      }
+
+      #content{
+        margin:auto;
+        width:500px;
+      }
+
+      .canvas{
+        box-shadow : 3px 3px 10px 0px rgba(0,0,0,0.1)
+      }
+
+      .shadow{
+        box-shadow:2px 2px 2px 0px rgba(0,0,0,0.1);
+        border-color:rgba(0,0,0,0.1);
+        border-style:solid;
+        border-width:1px;
+      }
+
+      #canvasHolder{
+        height:500px;
+        background-color:#2C363F;
+        position:relative;
+
+        user-select: none;
+       -moz-user-select: none;
+       -khtml-user-select: none;
+       -webkit-user-select: none;
+       -o-user-select: none;
+
+      }
+
+      #tools{
+        margin-top:15px;
+        width:500px;
+      }
+
     </style>
+
+    <script src="lib/EventEmitter.js"></script>
+    <script src="lib/CanvasSprite.js"></script>
+    <script src="lib/Sprite.js"></script>
+    <script src="lib/Anim.js"></script>
+
+    <script src="lib/FileReader.js"></script>
     <script src="lib/libgif.js"></script>
     <script src="lib/block/Header.js"></script>
     <script src="lib/block/ColorTable.js"></script>
@@ -21,90 +106,39 @@
     <script src="demo/GIFDrawer.js"></script>
   </head>
   <body>
-    <img id="gif" src="img/error4.gif">
+
+
+
+
+
+    <div id="content">
+      <h1>Draw a Gif</h1>
+      <p>Record your drawing and save it as a animated Gif. It's fast and generates light weight files. </p>
+      <div id="canvasHolder">
+        <img src="img/pencil.svg" width="40" height="40" id="pencil">
+      </div>
+      <div id="tools">
+        <div class="button shadow" onclick="drawer.clear()">Clear</div>
+        <div class="button shadow" onclick="drawer.save()">Save</div>
+        <div class="button shadow" onclick="drawer.toggleLoop(this)">Loop : Yes</div>
+      </div>
+
+    </div>
+
+
     <script>
 
-
-    var parser = new GifParser(100,100)
-
-
-    parser.setGlobalColorTable([
-      0xffb85f,
-      0xff7a5a,
-      0x00aaa0,
-      0x8ed2c9,
-      0xfcf4d9
-
-    ])
-
-
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    canvas.width = 100;canvas.height = 100;
-    //document.getElementsByTagName("body")[0].appendChild(canvas);
-
-
-
+    var drawer;
     window.onload = function(){
-      /*
-      var rub = new SuperGif({ gif: document.getElementById("gif") } );
-                    rub.load(function(){
-                        console.log('oh hey, now the gif is loaded');
-                    });*/
-      /*
-      context.beginPath();
-      context.fillStyle = "#ff0000"
-      context.fillRect(0,0,100,100);
-      context.fill();
-      context.closePath();
-      context.stroke();
-      parser.addFrame(canvas);
-
-      //context.rotate(1);
-      context.fillStyle = "#ffffff"
-      context.fillRect(25,25,50,50);
-      context.fill();
-      parser.addFrame(canvas);
-      parser.encode({
-        crop:true
-      });
-      //parser.parse();
-      */
+      drawer = new GIFDrawer(500,500,0x2C363F,0xffffff);
+      document.getElementById("canvasHolder").appendChild(drawer.dom);
+      drawer.dom.className = "canvas"
     }
 
-    /*
-   parser.open("img/error5.gif",function(){
-      //parser.encode();
-      parser.header.COLOR_RESOLUTION = 8;
-      parser.header.PIXEL_ASPECT_RATIO = 0;
-      parser.header.SORT_FLAG = false;
-
-      for(var i = 0;i<parser.blocks.length;i++){
-
-        if(parser.blocks[i] instanceof ImageDescriptor){
-          console.log("img",parser.blocks[i])
-          parser.blocks[i].colorTableSize = 0;//parser.header.GLOBAL_COLOR_TABLE_SIZE;
-        }
-        if(parser.blocks[i] instanceof GraphicControlExtension){
-          //console.log("controller!",i);
-          parser.blocks[i].byteSize = 4;
-          parser.blocks[i].delayTime = 500;
-        }
-      }
-      //console.log("last block",this.blocks[14])
-      var corruptBlock = this.blocks.splice(9+4,2);
-      console.log("corrupt",corruptBlock)
-
-      parser.encode();
-    })
-    */
-
-
-    var drawer = new GIFDrawer(400,400,0x00aaa0,0xfcf4d9);
-    document.getElementsByTagName("body")[0].appendChild(drawer.dom);
 
 
 
     </script>
+
   </body>
 </html>

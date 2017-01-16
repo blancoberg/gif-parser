@@ -13,20 +13,35 @@ codeTable
     4
       5
 
+ta bort steps för själva ritningen. ha bara det för framesen.
+Lägg till partiklar
+lägg till animation för pennan
+
+GIFLab
 om koden finns gå ett steg djupare i codeTable
 om den inte finns gå tillbaka till djup ett och börja om
 
+compare mine to their fucking code!!!!!!
+  det blir fel kod i slutet ibland
+  fuck it! uppfinn inte hjulet igen.
+
+clean up code
 add image frame to existing gif     x
 create a gif from empty GifParser   x
 analyse previous frame difference and use that to crop/position image
 add algorythms for creating patterns where a color doesnt exist
 add transparent/interlaced
-
+add progress for encoding and decoding
+generate color table on addFrame
 Lägg till samma koll på table.size som i decode funktionen. har slösat flera dagar på den här skiten nu.
 lägg till getUpdatedArea()
+  * return false if no changes is found
 Lägg till cropImageData
 
+optimise encoding/decoding function
 
 Encoding function
   * last byte is wrong when hasCode == false
   * fix code reset
+
+pengar till Andreas 300 kr.
