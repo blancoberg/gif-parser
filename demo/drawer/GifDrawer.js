@@ -57,11 +57,17 @@ GIFDrawer.prototype.save = function(){
   if(!this.encoded){
 
     var blob = this.parser.encode({loop:this.loop});
-    console.log("save",blob)
+    console.log("save")
     var img = new Image();
     var url = URL.createObjectURL(blob);
+    console.log("url",url)
+
+
     img.src = url;
+
     document.getElementById("canvasHolder").appendChild(img);
+
+    //document.getElementById("test").setAttribute("src",url);
     this.dom.style.display="none";
     this.encoded = img;
 
@@ -71,7 +77,8 @@ GIFDrawer.prototype.save = function(){
     a.href = url;
     a.download = "drawing.gif";
     a.click();
-    window.URL.revokeObjectURL(url);
+    //window.URL.revokeObjectURL(url);
+
 
   }
 

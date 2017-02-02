@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>soundwave</title>
+    <script src="../../lib/FileReader.js"></script>
+    <script src="../../lib/libgif.js"></script>
+    <script src="../../lib/block/Header.js"></script>
+    <script src="../../lib/block/ColorTable.js"></script>
+    <script src="../../lib/block/ImageDescriptor.js"></script>
+    <script src="../../lib/block/LZW.js"></script>
+    <script src="../../lib/block/ApplicationExtension.js"></script>
+    <script src="../../lib/block/GraphicControlExtension.js"></script>
+    <script src="../../lib/GifParser.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+
+
+    <script type="text/javascript">
+    function rgbToHex(r, g, b) {
+      return (  (r << 16) + (g << 8) + b);
+    }
+
+      function hexToRgb(hex) {
+        var bigint = hex;
+        var r = (bigint >> 16) & 255;
+        var g = (bigint >> 8) & 255;
+        var b = bigint & 255;
+
+        return {r:r,g:g,b:b};
+      }
+
+      function blendColors(color1,color2,opacity){
+          var c1 = hexToRgb(color1);
+          var c2 = hexToRgb(color2);
+          var c = {
+            r : Math.round(c1.r + (c2.r-c1.r)* opacity),
+            g : Math.round(c1.g + (c2.g-c1.g)* opacity),
+            b : Math.round(c1.b + (c2.b-c1.b)* opacity)
+          }
+          console.log("rgb",c.r,c.g,c.b)
+          return rgbToHex(c.r,c.g,c.b);
+
+      }
+
+      var w = 500;
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var snake = {pos:0,wobble:30};
+      var snakes = [];
+      var colors = [0x5d5553,0xfff9d6,0x9e0a39,0xd14a89];
+
+      // blend colors //
+      for(var i = 1;i<4;i++){
+        colors.push(blendColors(colors[0],colors[i],0.7))
+      }
+
+      // show colors //
+      var colorCanvas = document.createElement("canvas");
+      var colorContext = colorCanvas.getContext("2d");
+      document.getElementsByTagName("body")[0].appendChild(colorCanvas);
+      for(var i = 0;i<colors.length;i++){
+
+
+          colorContext.fillStyle = "#"+decimalToHex(colors[i]);
+
+
+        console.log("#"+decimalToHex(colors[i]))
+        colorContext.fillRect(i*30,0,30,30);
+      }
+
+
+      console.log("colors",colors);
+      //blendColors(colors[0],colors[1],0.9);
+
+      for(var i = 0;i<3;i++){
+        snakes.push({
+          pos:0.1*i,
+          wobble:70,
+          color : colors[i+1]
+        })
+      }
+
+      function decimalToHex(d) {
+      var hex = Number(d).toString(16);
+      hex = "000000".substr(0, 6 - hex.length) + hex;
+      return hex;
+    }
+
+      function render(time){
+
+        var t = time/700;
+        //console.log(t)
+        canvas.width = canvas.width;
+        context.globalAlpha=1;
+        context.fillStyle="#"+decimalToHex(colors[0])
+        context.fillRect(0,0,w,w);
+        context.globalAlpha=0.7
+        for(var a = 0;a<snakes.length;a++){
+
+          var snake = snakes[a];
+
+          context.strokeStyle="#ffffff"
+          context.lineWidth=0.2;
+          context.fillStyle = "#"+decimalToHex(snake.color);
+          context.beginPath();
+
+          var dt = (Math.max(0,t-snake.pos))%1;
+          var wobble = dt<0.83 ? (0.5 - 0.5*Math.cos(dt * Math.PI*2/0.83)) * snake.wobble : 0;
+          for(var i = 0;i<600;i++){
+
+            var laps = Math.floor(time/700)+1;
+            var proc = i/(600-1);
+            var cord = {
+              x : w/2 + (w/4 + wobble * Math.sin((t*Math.PI*80*2+snake.pos*100)/40 + Math.PI*(Math.pow(2,laps))  * (proc*2))) * Math.sin(Math.PI*2 * proc) ,
+              y: w/2 + (w/4 +wobble * Math.sin(-(t*Math.PI*80*2+snake.pos*100)/40+Math.PI*(Math.pow(2,laps)) * (proc*2))) * Math.cos(Math.PI*2 * proc)
+            }
+            i == 0 ? context.moveTo(cord.x,cord.y) : context.lineTo(cord.x,cord.y)
+          }
+
+          context.closePath();
+          context.fill();
+        }
+
+
+        //requestAnimationFrame(render);
+      }
+
+      var parser = new GifParser(500,500);
+      parser.setGlobalColorTable(colors)
+      for(var i = 0;i<35*2;i++){
+        render(i/35 * 700);
+        //render(200);
+        parser.addFrame(canvas,{localColorTable:false});
+
+      }
+
+      var blob = parser.encode({crop:true});
+      var url = URL.createObjectURL(blob);
+      var image = new Image();
+      image.src = url;
+      document.getElementsByTagName("body")[0].appendChild(image);
+
+      //render(700);
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script src="../../lib/EventEmitter.js"></script>
+    <script src="../../lib/CanvasSprite.js"></script>
+    <script src="../../lib/Sprite.js"></script>
+    <script src="../../lib/Anim.js"></script>
+
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+
+    <script>
+
+      var character = {};
+
+
+
+
+      function createPart(w,h,rx,ry,x,y,parent){
+        var p = new CanvasSprite();
+        p.width = w;
+        p.height = h;
+        p.x = x;
+        p.y = y;
+        p.origoX = rx;
+        p.origoY = ry;
+        p.counter = Math.random()*Math.PI*2;
+        p.draw(draw);
+        parent.addChild(p);
+        return p;
+      }
+
+      function draw(context,obj){
+        //context.fillStyle="rgba(0,0,0,0.4)"
+        //context.fillRect(0,0,obj.width,obj.height);
+
+        // draw
+        context.lineWidth=1;
+        context.strokeStyle="#ffffff"
+        context.beginPath();
+        var rnd = 5;
+        var cords = [0,0,1,0,1,1,0,1,0,0];
+        for(var i = 0;i<cords.length*4;i+=2){
+          var cmd = i==0 ? "moveTo" : "lineTo"
+          //var random = 0.5 + Math.sin(obj.counter + i/10)*0.5;
+          var random = Math.random();
+          i==0 ? context[cmd](cords[i%10]*obj.width - rnd + rnd*2*random,cords[(i+1)%10]*obj.height- rnd + rnd*2*random) : context[cmd](cords[i%10]*obj.width- rnd + rnd*2*random,cords[(i+1)%10]*obj.height- rnd + rnd*2*random)
+        }
+
+        obj.counter+=0.1;
+        context.closePath();
+        context.stroke();
+      }
+
+      var stage = new Sprite("canvas");
+      character.body = createPart(80,80,0.5,1,230,250,stage);
+      character.head = createPart(150,140,0.5,1,40,0,character.body);
+
+
+      for(var i = 0;i<2;i++){
+
+        var id = (i+1)
+        character["arm"+id] = createPart(10,25,0.5,0,40,10,character.body);
+        character["forearm"+id] = createPart(10,25,0.5,0,10/2,25,character["arm"+id]);
+        character["leg"+id] = createPart(10+3*i,20,0.5,0,40,80,character.body);
+        character["calf"+id] = createPart(10+3*i,20,0.5,0,5,20,character["leg"+id]);
+        character["foot"+id] = createPart(25,10,0.5,0,12.5,20,character["calf"+id]);
+      }
+
+      function animate(t){
+
+        var time = t/1000;
+
+        //context.fillRect(0,0,500,500);
+        character.body.y = 320 + ((time%0.5)<0.25 ? Math.sin(time*Math.PI*4 - Math.PI+0.1)*20 : Math.sin(time*Math.PI*4 - Math.PI+0.1)*2)  ;
+        character.head.rotation = (time*Math.PI*4+2.5)%(Math.PI*2) < Math.PI ?  Math.sin(time*Math.PI*4+2.5)*0.1 : Math.sin(time*Math.PI*4+2.5)*0.1;
+        character.body.rotation = 0.08;
+        for(var i = 0;i<2;i++){
+          var id = (i+1)
+          character["leg"+id].rotation = Math.sin(Math.PI*2*time + Math.PI * i)*0.7+0.4;
+          character["leg"+id].x = 40-Math.sin(Math.PI*2*time + Math.PI * i)*(10+i*10);
+
+          character["arm"+id].rotation = Math.sin(Math.PI*2*time + Math.PI * i+0.8)*0.5-0.1;
+          character["arm"+id].x = 40-Math.sin(Math.PI*2*time + Math.PI * i+0.8)*(10+i*10);
+          character["forearm"+id].rotation = -Math.PI/2 + Math.sin(Math.PI*2*time + Math.PI * i+0.8)*0.3+0.3;
+
+          character["calf"+id].rotation = Math.sin(Math.PI*2*time + (Math.PI) * i - 0.2)*0.7+0.7;
+          character["foot"+id].rotation = Math.sin(Math.PI*2*time + (Math.PI) * i - 0.9)*0.3+0.06;
+        }
+        requestAnimationFrame(animate);
+      }
+
+      function animate2(t){
+        t=t/2400;
+        var s = 0.8;
+        var parts = ["arm","forearm","leg","calf","foot","body","head"];
+
+        for(var a = 1;a<3;a++){
+          for(var i = 0;i<4;i++){
+            character[parts[i]+(a)].rotation = i<1 ? (-(a%2)*2+1)*Math.sin(Math.PI*2 * t )*s : i<2 ? -Math.PI*0.5 : (-(a%2)*2+1) * Math.sin(Math.PI*2*t - 0.9 * (i+1)%2)*s+s*0.8;
+
+          }
+        }
+
+        requestAnimationFrame(animate2);
+      }
+      animate(0);
+      //animate(0);
+
+      var ground = createPart(600,300,0,0,-10,350,stage)
+      character.body.rotation =  0;
+
+      stage.forceRender=true;
+      stage.draw(function(context,obj){
+        context.fillStyle="#ff0000";
+        context.fillRect(0,0,500,500);
+        context.fill();
+      })
+    </script>
+
+  </body>
+</html>

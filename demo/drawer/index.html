@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: blob:"/>
     <title></title>
     <link href="https://fonts.googleapis.com/css?family=Lato|Pacifico" rel="stylesheet">
 
@@ -89,21 +90,21 @@
 
     </style>
 
-    <script src="lib/EventEmitter.js"></script>
-    <script src="lib/CanvasSprite.js"></script>
-    <script src="lib/Sprite.js"></script>
-    <script src="lib/Anim.js"></script>
+    <script src="../../lib/EventEmitter.js"></script>
+    <script src="../../lib/CanvasSprite.js"></script>
+    <script src="../../lib/Sprite.js"></script>
+    <script src="../../lib/Anim.js"></script>
 
-    <script src="lib/FileReader.js"></script>
-    <script src="lib/libgif.js"></script>
-    <script src="lib/block/Header.js"></script>
-    <script src="lib/block/ColorTable.js"></script>
-    <script src="lib/block/ImageDescriptor.js"></script>
-    <script src="lib/block/LZW.js"></script>
-    <script src="lib/block/ApplicationExtension.js"></script>
-    <script src="lib/block/GraphicControlExtension.js"></script>
-    <script src="lib/GifParser.js"></script>
-    <script src="demo/GIFDrawer.js"></script>
+    <script src="../../lib/FileReader.js"></script>
+    <script src="../../lib/libgif.js"></script>
+    <script src="../../lib/block/Header.js"></script>
+    <script src="../../lib/block/ColorTable.js"></script>
+    <script src="../../lib/block/ImageDescriptor.js"></script>
+    <script src="../../lib/block/LZW.js"></script>
+    <script src="../../lib/block/ApplicationExtension.js"></script>
+    <script src="../../lib/block/GraphicControlExtension.js"></script>
+    <script src="../../lib/GifParser.js"></script>
+    <script src="GIFDrawer.js"></script>
   </head>
   <body>
 
@@ -115,7 +116,7 @@
       <h1>Draw a Gif</h1>
       <p>Record your drawing and save it as a animated Gif. It's fast and generates light weight files. </p>
       <div id="canvasHolder">
-        <img src="img/pencil.svg" width="40" height="40" id="pencil">
+        <img src="pencil.svg" width="40" height="40" id="pencil">
       </div>
       <div id="tools">
         <div class="button shadow" onclick="drawer.clear()">Clear</div>
@@ -139,6 +140,6 @@
 
 
     </script>
-
+    <img id="test">
   </body>
 </html>

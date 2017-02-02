@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: blob:"/>
+    <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Lato|Pacifico" rel="stylesheet">
+
+    <style>
+
+      #pencil{
+        pointer-events: none;
+        cursor:none;
+        display:none;
+      }
+      body{
+        background-color:#D6DBD2;
+        font-family:Pacifico;
+      }
+
+      h1{
+        font-size:70px;
+        color:#E75A7C;
+
+        padding-bottom:0px;
+        margin-bottom:20px;
+      }
+
+      p{
+        font-size:18px;
+        color:#585b56;
+        font-family:Lato;
+      }
+      .button{
+        padding:15px;
+        border-radius:5px;
+        background-color:#BBC7A4;
+        color:#ffffff;
+        display:inline-block;
+
+        font-size:25px;
+        cursor:pointer;
+        margin:0px;
+        text-shadow:1px 1px 0px rgba(0,0,0,0.3);
+
+        margin-top:8px;
+        margin-left:0px;
+        margin-right:5px;
+      }
+
+      .button:hover{
+
+
+        background-color:#E75A7C;
+      }
+
+      #content{
+        margin:auto;
+        width:500px;
+      }
+
+      #canvas{
+        box-shadow : 3px 3px 10px 0px rgba(0,0,0,0.1)
+      }
+
+      .shadow{
+        box-shadow:2px 2px 2px 0px rgba(0,0,0,0.1);
+        border-color:rgba(0,0,0,0.1);
+        border-style:solid;
+        border-width:1px;
+      }
+
+      #canvasHolder{
+        height:500px;
+        //background-color:#2C363F;
+        position:relative;
+
+        user-select: none;
+       -moz-user-select: none;
+       -khtml-user-select: none;
+       -webkit-user-select: none;
+       -o-user-select: none;
+
+      }
+
+      #tools{
+        margin-top:15px;
+        width:500px;
+      }
+
+    </style>
+
+    <script src="../../lib/EventEmitter.js"></script>
+    <script src="../../lib/CanvasSprite.js"></script>
+    <script src="../../lib/Sprite.js"></script>
+    <script src="../../lib/Anim.js"></script>
+
+    <script src="../../lib/FileReader.js"></script>
+    <script src="../../lib/libgif.js"></script>
+    <script src="../../lib/block/Header.js"></script>
+    <script src="../../lib/block/ColorTable.js"></script>
+    <script src="../../lib/block/ImageDescriptor.js"></script>
+    <script src="../../lib/block/LZW.js"></script>
+    <script src="../../lib/block/ApplicationExtension.js"></script>
+    <script src="../../lib/block/GraphicControlExtension.js"></script>
+    <script src="../../lib/GifParser.js"></script>
+
+  </head>
+  <body>
+
+
+
+
+
+    <div id="content">
+
+
+      <div id="canvasHolder">
+        <canvas id="canvas" width="500" height="500"></canvas>
+      </div>
+
+
+    </div>
+
+
+    <script>
+
+
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    var frame = 0;
+
+
+
+    function nextFrame(){
+      requestAnimationFrame(nextFrame.bind(this));
+      renderFrame((frame/200)%1);
+      frame++;
+    }
+
+
+
+
+    //console.log()
+
+    function q(t){
+
+
+      var w=500,x=w/2,m = Math,pi=m.PI,i=a=0,o,c=context,t=(t/2500)%1,d=0;
+      canvas.width=w
+      v=0;
+
+      while(++v<49){
+        
+        a = ~~(v/7)
+        i = v%7
+        u = m.max(0,t*1.8-.1*a)
+        s= u<.2 ? u*5 :  u < .8 ? 1: m.max(0,1-(u-.8)*5)
+        p=pi/3*(a+4)
+        !i ? c.moveTo(x,x) : 0
+        r=pi*(i/3)
+        c.lineTo(m.sin(r)*30*s + x+57*m.cos(p),x + 57*m.sin(p)-m.cos(r)*30*s)
+        i==6?c.fill():0
+
+      }
+      requestAnimationFrame(q);
+    }
+
+
+
+
+    q();
+
+
+    </script>
+    <img id="test">
+  </body>
+</html>

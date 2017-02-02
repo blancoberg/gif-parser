@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>soundwave</title>
+    <script src="../../lib/FileReader.js"></script>
+    <script src="../../lib/libgif.js"></script>
+    <script src="../../lib/block/Header.js"></script>
+    <script src="../../lib/block/ColorTable.js"></script>
+    <script src="../../lib/block/ImageDescriptor.js"></script>
+    <script src="../../lib/block/LZW.js"></script>
+    <script src="../../lib/block/ApplicationExtension.js"></script>
+    <script src="../../lib/block/GraphicControlExtension.js"></script>
+    <script src="../../lib/GifParser.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+
+
+    <script type="text/javascript">
+    function rgbToHex(r, g, b) {
+      return (  (r << 16) + (g << 8) + b);
+    }
+
+      function hexToRgb(hex) {
+        var bigint = hex;
+        var r = (bigint >> 16) & 255;
+        var g = (bigint >> 8) & 255;
+        var b = bigint & 255;
+
+        return {r:r,g:g,b:b};
+      }
+
+      function blendColors(color1,color2,opacity){
+          var c1 = hexToRgb(color1);
+          var c2 = hexToRgb(color2);
+          var c = {
+            r : Math.round(c1.r + (c2.r-c1.r)* opacity),
+            g : Math.round(c1.g + (c2.g-c1.g)* opacity),
+            b : Math.round(c1.b + (c2.b-c1.b)* opacity)
+          }
+          console.log("rgb",c.r,c.g,c.b)
+          return rgbToHex(c.r,c.g,c.b);
+
+      }
+
+      var w = 500;
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var snake = {pos:0,wobble:30};
+      var snakes = [];
+      var colors = [0x5e2e2a,0x7e3d38,0x9e4d47,0xbf5d55,0xe77067,0xfa786e];
+      colors.reverse();
+
+      var tempCanvas = document.createElement("canvas");
+      var tempContext = tempCanvas.getContext("2d");
+
+      //colors.reverse();
+      // blend colors //
+      for(var i = 1;i<4;i++){
+        //colors.push(blendColors(colors[0],colors[i],0.7))
+      }
+
+      // show colors //
+      var colorCanvas = document.createElement("canvas");
+      var colorContext = colorCanvas.getContext("2d");
+      document.getElementsByTagName("body")[0].appendChild(colorCanvas);
+      for(var i = 0;i<colors.length;i++){
+
+
+          colorContext.fillStyle = "#"+decimalToHex(colors[i]);
+
+
+        //console.log("#"+decimalToHex(colors[i]))
+        colorContext.fillRect(i*30,0,30,30);
+      }
+
+
+      console.log("colors",colors);
+      //blendColors(colors[0],colors[1],0.9);
+
+
+
+
+      function decimalToHex(d) {
+      var hex = Number(d).toString(16);
+      hex = "000000".substr(0, 6 - hex.length) + hex;
+      return hex;
+    }
+
+      var amount = 60;
+      var bricks = [];
+      for(var i = 0;i<amount;i++){
+
+        bricks[i] = {x:i%7 * 80-10,y:80 * Math.floor(i/7)};
+        bricks[i].counter = Math.sqrt(Math.pow((bricks[i].x - w/2),2)+Math.pow((bricks[i].y - w/2),2))/80;
+        //console.log("counter",bricks[i].counter,bricks[i].x,bricks[i].y);
+      }
+
+      //colors.reverse();
+      for(var i = 0;i<0;i++){
+        var v = colors.splice(0,1);
+        colors.push(v);
+      }
+
+      function drawRect(x,y,state = 1){
+
+
+        var size = w/15;
+        var perspective = 15;
+        var height = w/15;
+
+        tempCanvas.width = w;tempCanvas.height = w;
+        // draw inside
+        if(state<0){
+
+          //console.log("draw inside")
+          tempContext.beginPath();
+          tempContext.fillStyle="#"+decimalToHex(colors[4]);
+          tempContext.moveTo(x,y);
+          tempContext.lineTo(x+size+perspective,y);
+          tempContext.lineTo(x+size+perspective,y+size);
+          tempContext.lineTo(x,y+size);
+          tempContext.closePath();
+          tempContext.fill();
+
+          tempContext.beginPath();
+          tempContext.fillStyle="#"+decimalToHex(colors[5]);
+          tempContext.moveTo(x,y);
+          tempContext.lineTo(x-perspective,y+size);
+          tempContext.lineTo(x,y+size);
+          tempContext.closePath();
+          tempContext.fill();
+
+          //tempContext.stroke();
+
+        }else{
+          // draw shadow
+          tempContext.beginPath();
+          tempContext.fillStyle="#"+decimalToHex(colors[4]);
+          // set startpos to upper left corner
+          var pos = {x:x+size,y:y+size};
+
+          tempContext.moveTo(pos.x,pos.y);
+          tempContext.lineTo(pos.x + size*state*3,pos.y-(state) * size/8 );
+          tempContext.lineTo(pos.x + size*state*3,pos.y-size*1 +(state) * size/8);
+          tempContext.lineTo(x+size+perspective,y);
+          tempContext.closePath();
+          tempContext.fill();
+        }
+
+        // draw top //
+        var amount = state>=0 ? 1 : 2;
+
+
+        for(var i = 0;i<amount;i++){
+          var s = state;
+
+          if(i==1){
+            s = 0;
+            tempContext.globalCompositeOperation="destination-in";
+          }
+          tempContext.beginPath();
+          tempContext.fillStyle="#"+decimalToHex(colors[2]);
+          tempContext.lineTo(x,y-height*s);
+          tempContext.lineTo(x+size+perspective,y-height*s);
+          tempContext.lineTo(x+size,y+size-height*s);
+          tempContext.lineTo(x-perspective,y+size-height*s);
+          tempContext.closePath();
+          tempContext.fill();
+
+          if(i==1){
+
+          }
+
+          // reset clipping
+          tempContext.globalCompositeOperation = 'source-over';
+
+
+        }
+        context.drawImage(tempCanvas,0,0);
+
+        // draw outside //
+
+        if(state>=0){
+          // front
+          context.fillStyle="#"+decimalToHex(colors[4]);
+          context.fillRect(x-perspective,y-height*state + size,size+perspective,height*state)
+
+          // side //
+          context.fillStyle="#"+decimalToHex(colors[5]);
+          var pos = {
+            x: x+size,
+            y: y-height*state + size
+          }
+          context.beginPath();
+          context.moveTo(pos.x,pos.y);
+          context.lineTo(pos.x+perspective,pos.y-size);
+          context.lineTo(pos.x+perspective,pos.y+height*state - size);
+          context.lineTo(pos.x,pos.y+height*state);
+          context.closePath();
+          context.fill();
+
+
+          // shadow //
+
+        }
+
+      }
+
+      function render(time){
+
+        var t = time/750;
+        context.fillStyle="#"+decimalToHex(colors[3]);
+        context.fillRect(0,0,w,w);
+        context.lineWidth=1;
+
+        for(var i = 0;i<bricks.length;i++){
+          var brick = bricks[i];
+          //console.log("brick.counter");
+          drawRect(brick.x,brick.y,Math.sin(t*Math.PI*2+brick.counter));
+        }
+
+
+
+
+        //requestAnimationFrame(render);
+      }
+      //render(0);
+
+
+      var parser = new GifParser(500,500);
+      parser.setGlobalColorTable(colors)
+      for(var i = 0;i<30;i++){
+        render(i/30 * 750);
+        //render(200);
+        parser.addFrame(canvas,{localColorTable:false});
+
+      }
+
+      var blob = parser.encode({crop:true});
+      var url = URL.createObjectURL(blob);
+      var image = new Image();
+      image.src = url;
+      document.getElementsByTagName("body")[0].appendChild(image);
+      
+      //render(700);
+
+
+    </script>
+  </body>
+</html>

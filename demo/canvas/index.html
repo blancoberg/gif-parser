@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: blob:"/>
+    <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Lato|Pacifico" rel="stylesheet">
+
+    <style>
+
+      #pencil{
+        pointer-events: none;
+        cursor:none;
+        display:none;
+      }
+      body{
+        background-color:#D6DBD2;
+        font-family:Pacifico;
+      }
+
+      h1{
+        font-size:70px;
+        color:#E75A7C;
+
+        padding-bottom:0px;
+        margin-bottom:20px;
+      }
+
+      p{
+        font-size:18px;
+        color:#585b56;
+        font-family:Lato;
+      }
+      .button{
+        padding:15px;
+        border-radius:5px;
+        background-color:#BBC7A4;
+        color:#ffffff;
+        display:inline-block;
+
+        font-size:25px;
+        cursor:pointer;
+        margin:0px;
+        text-shadow:1px 1px 0px rgba(0,0,0,0.3);
+
+        margin-top:8px;
+        margin-left:0px;
+        margin-right:5px;
+      }
+
+      .button:hover{
+
+
+        background-color:#E75A7C;
+      }
+
+      #content{
+        margin:auto;
+        width:500px;
+      }
+
+      #canvas{
+        box-shadow : 3px 3px 10px 0px rgba(0,0,0,0.1);
+        background-color:#000000;
+      }
+
+      .shadow{
+        box-shadow:2px 2px 2px 0px rgba(0,0,0,0.1);
+        border-color:rgba(0,0,0,0.1);
+        border-style:solid;
+        border-width:1px;
+      }
+
+      #canvasHolder{
+        height:500px;
+        //background-color:#2C363F;
+        position:relative;
+
+        user-select: none;
+       -moz-user-select: none;
+       -khtml-user-select: none;
+       -webkit-user-select: none;
+       -o-user-select: none;
+
+      }
+
+      #tools{
+        margin-top:15px;
+        width:500px;
+      }
+
+    </style>
+
+    <script src="../../lib/EventEmitter.js"></script>
+    <script src="../../lib/CanvasSprite.js"></script>
+    <script src="../../lib/Sprite.js"></script>
+    <script src="../../lib/Anim.js"></script>
+
+    <script src="../../lib/FileReader.js"></script>
+    <script src="../../lib/libgif.js"></script>
+    <script src="../../lib/block/Header.js"></script>
+    <script src="../../lib/block/ColorTable.js"></script>
+    <script src="../../lib/block/ImageDescriptor.js"></script>
+    <script src="../../lib/block/LZW.js"></script>
+    <script src="../../lib/block/ApplicationExtension.js"></script>
+    <script src="../../lib/block/GraphicControlExtension.js"></script>
+    <script src="../../lib/GifParser.js"></script>
+
+  </head>
+  <body>
+
+
+
+
+
+    <div id="content">
+      <h1>Canvas2Gif</h1>
+
+      <div id="canvasHolder">
+        <canvas id="canvas" width="500" height="500"></canvas>
+      </div>
+
+
+    </div>
+
+
+    <script>
+
+    var drawer;
+    var canvas;
+    var context;
+    var colors = [];
+    var frame = 0;
+
+
+
+    colors = [
+      0xFF9E3B,
+      0xE9E347,
+      0xFDFBC8,
+      0x02DDC7,
+      0x005E92
+    ]
+
+    var parser;
+
+    window.onload = function(){
+      canvas = document.getElementById("canvas");
+      context = canvas.getContext("2d");
+      parser = new GifParser(500,500);
+
+      parser.setGlobalColorTable(colors);
+      for(var i = 0;i<150;i++){
+        renderFrame(i/150);
+        parser.addFrame(canvas);
+      }
+
+
+      var blob = parser.encode({crop:true});
+      var url = URL.createObjectURL(blob);
+
+      var img = new Image();
+      img.src = url;
+      document.getElementById("canvasHolder").appendChild(img);
+
+      //nextFrame();
+      //renderFrame(0);
+    }
+
+
+    function nextFrame(){
+      requestAnimationFrame(nextFrame.bind(this));
+      renderFrame((frame/200)%1);
+      frame++;
+    }
+
+
+
+    function decimalToHex(d) {
+    var hex = Number(d).toString(16);
+    hex = "000000".substr(0, 6 - hex.length) + hex;
+    return hex;
+  }
+
+
+    function renderFrame(time){
+
+      canvas.width = canvas.width;
+      var maxColors = colors.length;
+
+      var steps = 6;
+      for(var i = 0;i<steps;i++){
+
+        var t;
+        var value = (Math.max(0,Math.min(1,(time+i*0.015)%1)))%1;
+
+        var s = Math.floor(value*maxColors);
+        var seg = 1/maxColors;
+
+        t = Easing.easeOutBounce(
+          value - s * seg,
+          s * seg,
+          seg,
+          seg);
+
+        for(var a = 0;a<maxColors+1;a++){
+          var color = colors[(i+a)%maxColors];
+          context.fillStyle="#"+decimalToHex(color);//"#"+color.toString(16);//"rgba("+color.r+","+color.g+","+color.b+",1)";
+          context.fillRect(i/(steps) * 500,maxColors*t * 500 - 500*(a),500/steps,500);
+        }
+
+      }
+
+
+    }
+
+
+
+
+    </script>
+    <img id="test">
+  </body>
+</html>
